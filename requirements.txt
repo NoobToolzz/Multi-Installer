@@ -1,0 +1,4 @@
+rich
+pathlib
+requests
+tqdm
