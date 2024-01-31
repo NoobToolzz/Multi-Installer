@@ -12,7 +12,7 @@ def main():
         print(
             Align.center(
                 Panel(
-                    MainFunctions.tableGen(),
+                    MainFunctions.tableGen,
                     title="Available Downloads",
                     subtitle="Multi-Installer",
                     style="bold purple",
@@ -42,8 +42,7 @@ def main():
             print(Align.center("[bold red]Exiting..."))
             exit()
         elif user_choice.lower() in ["status", "check", "check status"]:
-            MainFunctions.checkLinkStatuses()
-            input("\n[bold cyan]Press any key to return to menu")
+            MainFunctions.checkLinkStatuses
         elif user_choice in choices.keys():
             MainFunctions.download_and_run(user_choice)  # Download the file and run it
             MainFunctions.cleanUpFiles(user_choice, Path(__file__).resolve().parent)
@@ -53,5 +52,5 @@ def main():
 if __name__ == "__main__":
     os.system("cls" if os.name == "nt" else "clear")
 
-    SideFunctions.cleanUpCache()  # Prevent Python from writing bytecode to .pyc files and __pycache__ directories
+    SideFunctions.cleanUpCache  # Prevent Python from writing bytecode to .pyc files and __pycache__ directories
     main()
