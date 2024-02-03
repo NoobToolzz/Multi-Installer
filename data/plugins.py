@@ -24,7 +24,7 @@ class SideFunctions:
     def __init__(self) -> None:
         self.cleanUpCache = self.cleanUpCache()
 
-    def cleanUpCache(self):
+    def cleanUpCache():
         # The code `[p.unlink() for p in pathlib.Path(".").rglob("*.py[co]")]` is deleting all the `.pyc`
         # and `.pyo` files in the current directory and its subdirectories.
         [p.unlink() for p in pathlib.Path(".").rglob("*.py[co]")]
@@ -38,7 +38,7 @@ class MainFunctions:
         self.cleanUpFiles = self.cleanUpFiles()
         self.download_and_run = self.download_and_run()
 
-    def tableGen(self):
+    def tableGen():
         table = Table()
 
         table.add_column("Key", justify="center", style="bold yellow", no_wrap=True)
@@ -51,7 +51,7 @@ class MainFunctions:
 
         return table
 
-    def checkLinkStatuses(self):
+    def checkLinkStatuses():
         def checkLinkStatus(choice, table):
             try:
                 headers = {
@@ -102,7 +102,7 @@ class MainFunctions:
         )
         console.input(Align.center("[bold cyan] Press any key to return to menu..."))
 
-    def cleanUpFiles(self, choice, directory):
+    def cleanUpFiles(choice, directory):
         print(
             Align.center(f"[bold cyan]Deleting [bold yellow]{choices[choice].filename}")
         )
@@ -120,7 +120,7 @@ class MainFunctions:
                 )
             )
 
-    def download_and_run(self, choice):
+    def download_and_run(choice):
         os.system("cls" if os.name == "nt" else "clear")
         os.makedirs(os.path.dirname(choices[choice].filename), exist_ok=True)
 
