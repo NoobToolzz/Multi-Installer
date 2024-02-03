@@ -5,6 +5,7 @@
 - [About](#about)
 - [Getting Started](#getting_started)
 - [Usage](#usage)
+- [Contributing](#contributing)
 
 ## About <a name = "about"></a>
 
@@ -29,3 +30,8 @@ cd Multi-Installer
 ```
 python main.py
 ```
+
+## Contributing <a name = "contributing"></a>
+Contributions are more than welcome! 
+
+There are no guidelines for contributing as I have no brain but you can feel free to submit a PR. I am mostly looking for more downloads to add to the raw paste (located in data/list.py) as I have no more knowledge on anymore programs.
