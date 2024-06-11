@@ -19,7 +19,7 @@ def fetch_choices():
     with console.status(
         "[bold green]Fetching choices remotely...", spinner="dots"
     ) as status:
-        remote_choices_url = "https://paste.gg/p/not_noob/fb60e2abb17143ed981929025b80b988/files/9d5d4557674343738a980f8bf5e9a777/raw"
+        remote_choices_url = "https://gist.githubusercontent.com/NoobToolzz/c3df31c9dd4356e91ff5ec77bf5f986b/raw/89136ec8f2c5027efd0a4e4d882d6a9f680d383a/gistfile1.txt"
 
         try:
             response = requests.get(remote_choices_url)
