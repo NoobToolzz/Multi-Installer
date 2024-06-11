@@ -2,3 +2,4 @@ rich
 pathlib
 requests
 tqdm
+fake_headers
