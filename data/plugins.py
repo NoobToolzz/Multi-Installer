@@ -3,6 +3,7 @@ import time
 import pathlib
 import requests
 import subprocess
+import fake_headers
 
 from . import list
 from tqdm import tqdm
@@ -54,11 +55,11 @@ class MainFunctions:
     def checkLinkStatuses():
         def checkLinkStatus(choice, table):
             try:
-                headers = {
-                    "Proxy-Connection": "keep-alive",
-                    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36 RuxitSynthetic/1.0 v6999791141105461439 t7527522693257895152 ath5ee645e0 altpriv cvcv=2 smf=0",
-                }
-                r = requests.head(choice.url, headers=headers, allow_redirects=True)
+                r = requests.head(
+                    choice.url,
+                    headers=fake_headers.Headers().generate(),
+                    allow_redirects=True,
+                )
                 status = (
                     f"[bold green]{r.status_code} [bold cyan]OK"
                     if r.status_code == 200
