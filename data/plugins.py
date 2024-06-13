@@ -1,4 +1,5 @@
 import os
+import json
 import time
 import pathlib
 import requests
@@ -19,7 +20,10 @@ from concurrent.futures import ThreadPoolExecutor
 
 console = Console()
 choices = list.choices
+config = json.load(open('config.json', 'r', encoding='utf-8'))
 
+# Declare the setting variables
+cleanup = config["cleanup"]
 
 class SideFunctions:
     def __init__(self) -> None:
@@ -60,11 +64,13 @@ class MainFunctions:
                     headers=fake_headers.Headers().generate(),
                     allow_redirects=True,
                 )
+                
                 status = (
                     f"[bold green]{r.status_code} [bold cyan]OK"
                     if r.status_code == 200
                     else f"[bold red]{r.status_code} [bold yellow]ERROR"
                 )
+                
                 table.add_row(choice.name, status)
             except Exception as e:
                 table.add_row(choice.name, f"[bold red]ERROR")
@@ -72,6 +78,7 @@ class MainFunctions:
         os.system("cls" if os.name == "nt" else "clear")
 
         table = Table()
+        
         table.add_column(
             "Name",
             justify="center",
@@ -89,9 +96,8 @@ class MainFunctions:
 
                 for future in futures:
                     future.result()
-
-        console = Console()
-        console.print(
+        
+        print(
             Align.center(
                 Panel.fit(
                     table,
@@ -101,25 +107,32 @@ class MainFunctions:
                 )
             )
         )
+        
         console.input(Align.center("[bold cyan] Press any key to return to menu..."))
 
     def cleanUpFiles(choice, directory):
-        print(
-            Align.center(f"[bold cyan]Deleting [bold yellow]{choices[choice].filename}")
-        )
-        try:
-            os.remove(os.path.join(directory, choices[choice].filename))
+        if cleanup:
             print(
-                Align.center(
-                    f"[bold cyan]Successfully deleted [bold yellow]{choices[choice].filename}"
-                )
+                Align.center(f"[bold cyan]Deleting [bold yellow]{choices[choice].filename}")
             )
-        except Exception as e:
-            print(
-                Align.center(
-                    f"[bold red]Error when deleting [bold yellow]{choices[choice].filename} | [bold magenta]{e}"
+            
+            try:
+                os.remove(os.path.join(directory, choices[choice].filename))
+                
+                print(
+                    Align.center(
+                        f"[bold cyan]Successfully deleted [bold yellow]{choices[choice].filename}"
+                    )
                 )
-            )
+            except Exception as e:
+                print(
+                    Align.center(
+                        f"[bold red]Error when deleting [bold yellow]{choices[choice].filename} | [bold magenta]{e}"
+                    )
+                )
+        else:
+            print(Align.center(f"[bold cyan]Skipping cleanup..."))
+            
 
     def download_and_run(choice):
         os.system("cls" if os.name == "nt" else "clear")
@@ -148,28 +161,34 @@ class MainFunctions:
 
             stop_timer = time.time()
             downloadElapsed_time = round(stop_timer - start_timer)
+            
             print(
                 Align.center(
                     f"[bold cyan]Downloaded [bold yellow]{choices[choice].filename} [bold cyan]in [bold magenta]{downloadElapsed_time} [bold cyan]seconds"
                 )
             )
+            
             time.sleep(1)
 
             runFile = Prompt.ask(
                 f"\n[bold cyan]Would you like to install/run [bold yellow]{choices[choice].filename}[bold cyan]?[bold magenta]",
             )
+            
             if runFile.lower() in ["No", "N", "n", "no"]:
                 print(
                     Align.center(
                         f"\n[bold cyan]Total time elapsed: [bold magenta]{downloadElapsed_time} [bold cyan]seconds"
                     )
                 )
-                print(
-                    Align.center(
-                        f"[bold cyan]Cleaning up [bold yellow]{choices[choice].filename} [bold cyan]and exiting..."
+                
+                if cleanup:
+                    print(
+                        Align.center(
+                            f"[bold cyan]Cleaning up [bold yellow]{choices[choice].filename} [bold cyan]and exiting..."
+                        )
                     )
-                )
-                time.sleep(2)
+                    time.sleep(2)
+                    
                 return
             elif runFile.lower() in ["Yes", "Y", "y", "yes"]:
                 pass
@@ -179,6 +198,7 @@ class MainFunctions:
                 spinner="dots",
             ) as status:
                 start_timer = time.time()
+                
                 subprocess.Popen(
                     f'"{Path(__file__).resolve().parent.parent / choices[choice].filename}"',
                     cwd=Path(__file__).resolve().parent.parent,
@@ -188,6 +208,7 @@ class MainFunctions:
                 status.stop()
                 stop_timer = time.time()
                 runElapsed_time = round(stop_timer - start_timer)
+                
                 print(
                     Align.center(
                         f"[bold cyan]Successfully ran [bold yellow]{choices[choice].filename} [bold cyan]in [bold magenta]{runElapsed_time} [bold cyan]seconds\n"
@@ -200,7 +221,7 @@ class MainFunctions:
                 )
             )
 
-            input(f"[bold cyan]Press any key to return to menu")
+            console.input(f"[bold cyan]Press any key to return to menu")
 
         except Exception as e:
             print(f"Error: {e}")
