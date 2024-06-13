@@ -22,30 +22,70 @@ version = "1.0.2"
 
 console = Console()
 choices = list.choices
-config = json.load(open('config.json', 'r', encoding='utf-8'))
-
-# Declare the setting variables
-cleanup = config["cleanup"]
-
 class SideFunctions:
     def __init__(self) -> None:
-        self.cleanUpCache = self.cleanUpCache()
+        self.load_config()
 
-    def cleanUpCache():
-        # The code `[p.unlink() for p in pathlib.Path(".").rglob("*.py[co]")]` is deleting all the `.pyc`
-        # and `.pyo` files in the current directory and its subdirectories.
+    def load_config(self):
+        with open("config.json", 'r', encoding='utf-8') as f:
+            self.config = json.load(f)
+
+    def save_config(self):
+        with open("config.json", 'w', encoding='utf-8') as f:
+            json.dump(self.config, f, indent=4)
+
+    def cleanUpCache(self):
         [p.unlink() for p in pathlib.Path(".").rglob("*.py[co]")]
         [p.rmdir() for p in pathlib.Path(".").rglob("__pycache__")]
 
+    def displaySettings(self):
+        os.system("cls" if os.name == "nt" else "clear")
+        
+        cleanup_value = self.config.get("cleanup", True)  # Default value if not present
+
+        print(
+            Align.center(
+                Panel(
+                    f"[bold cyan]Cleanup: [bold yellow]{cleanup_value}",
+                    title="Settings",
+                    subtitle=f"Multi-Installer v{version}",
+                    style="bold purple",
+                    border_style="bold green",
+                )
+            )
+        )
+        
+        print(
+            Align.center(
+                "\n[bold white][[bold yellow]cleanup[bold white]] [bold cyan]Toggle cleanup\n[bold white][[bold yellow]quit[bold white]] [bold red]Back to menu"
+            )
+        )
+        
+        user_choice = Prompt.ask(
+            "\n[bold white][[bold yellow]>[bold white]] [bold cyan]Choice"
+        )
+        
+        if user_choice.lower() in ["cleanup", "toggle", "toggle cleanup"]:
+            self.config["cleanup"] = not cleanup_value
+            self.save_config()
+            
+            print(
+                Align.center(
+                    f"[bold cyan]Cleanup is now set to [bold yellow]{self.config['cleanup']}"
+                )
+            )
+            
+            time.sleep(2)
+        
+        return self.displaySettings()
+
+
 
 class MainFunctions:
-    def __init__(self) -> None:
-        self.tableGen = self.tableGen()
-        self.checkLinkStatuses = self.checkLinkStatuses()
-        self.cleanUpFiles = self.cleanUpFiles()
-        self.download_and_run = self.download_and_run()
-
-    def tableGen():
+    def __init__(self, config) -> None:
+        self.config = config
+        
+    def tableGen(self):
         table = Table()
 
         table.add_column("Key", justify="center", style="bold yellow", no_wrap=True)
@@ -58,7 +98,7 @@ class MainFunctions:
 
         return table
 
-    def checkLinkStatuses():
+    def checkLinkStatuses(self):
         def checkLinkStatus(choice, table):
             try:
                 r = requests.head(
@@ -112,8 +152,8 @@ class MainFunctions:
         
         console.input(Align.center("[bold cyan] Press any key to return to menu..."))
 
-    def cleanUpFiles(choice, directory):
-        if cleanup:
+    def cleanUpFiles(self, choice, directory):
+        if self.config["cleanup"]:
             print(
                 Align.center(f"[bold cyan]Deleting [bold yellow]{choices[choice].filename}")
             )
@@ -136,7 +176,7 @@ class MainFunctions:
             print(Align.center(f"[bold cyan]Skipping cleanup..."))
             
 
-    def download_and_run(choice):
+    def download_and_run(self, choice):
         os.system("cls" if os.name == "nt" else "clear")
         os.makedirs(os.path.dirname(choices[choice].filename), exist_ok=True)
 
@@ -183,7 +223,7 @@ class MainFunctions:
                     )
                 )
                 
-                if cleanup:
+                if self.config["cleanup"]:
                     print(
                         Align.center(
                             f"[bold cyan]Cleaning up [bold yellow]{choices[choice].filename} [bold cyan]and exiting..."

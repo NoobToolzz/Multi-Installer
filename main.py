@@ -4,6 +4,8 @@ from rich.align import Align
 from rich.panel import Panel
 from rich.prompt import Prompt
 
+side_functions = SideFunctions()
+main_functions = MainFunctions(side_functions.config)
 
 def main():
     while True:
@@ -12,7 +14,7 @@ def main():
         print(
             Align.center(
                 Panel(
-                    MainFunctions.tableGen(),
+                    main_functions.tableGen(),
                     title="Available Downloads",
                     subtitle=f"Multi-Installer v{version}",
                     style="bold purple",
@@ -22,7 +24,7 @@ def main():
         )
         print(
             Align.center(
-                "\n[bold white][[bold yellow]status[bold white]] [bold cyan]Check link statuses\n[bold white][[bold yellow]quit[bold white]] [bold red]Exit"
+                "\n[bold white][[bold yellow]settings[bold white]] [bold cyan]Modify settings\n[bold white][[bold yellow]status[bold white]] [bold cyan]Check link availability\n[bold white][[bold yellow]quit[bold white]] [bold red]Exit"
             )
         )
 
@@ -34,23 +36,21 @@ def main():
             "exit",
             "quit",
             "stop",
-            "kill",
-            "kill self",
-            "self.kill",
-            "kill(self)",
         ]: 
             print(Align.center("[bold red]Exiting..."))
             exit()
         elif user_choice.lower() in ["status", "check", "check status"]:
-            MainFunctions.checkLinkStatuses()
+            main_functions.checkLinkStatuses()
+        elif user_choice.lower() in ["settings", "setting"]:
+            side_functions.displaySettings()
         elif user_choice in choices.keys():
-            MainFunctions.download_and_run(user_choice)
-            MainFunctions.cleanUpFiles(user_choice, Path(__file__).resolve().parent)
+            main_functions.download_and_run(user_choice)
+            main_functions.cleanUpFiles(user_choice, Path(__file__).resolve().parent)
             time.sleep(2)
 
 
 if __name__ == "__main__":
     os.system("cls" if os.name == "nt" else "clear")
 
-    SideFunctions.cleanUpCache()  # Prevent Python from writing bytecode to .pyc files and __pycache__ directories
+    side_functions.cleanUpCache() # Prevent Python from writing bytecode to .pyc files and __pycache__ directories
     main()
