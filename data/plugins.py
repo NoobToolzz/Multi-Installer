@@ -18,7 +18,7 @@ from rich.prompt import Prompt
 from rich.console import Console
 from concurrent.futures import ThreadPoolExecutor
 
-version = "1.0.2"
+version = "1.0.3"
 
 console = Console()
 choices = list.choices
