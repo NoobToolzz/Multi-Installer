@@ -18,6 +18,8 @@ from rich.prompt import Prompt
 from rich.console import Console
 from concurrent.futures import ThreadPoolExecutor
 
+version = "1.0.2"
+
 console = Console()
 choices = list.choices
 config = json.load(open('config.json', 'r', encoding='utf-8'))
@@ -102,7 +104,7 @@ class MainFunctions:
                 Panel.fit(
                     table,
                     title="Link Statuses",
-                    subtitle="Multi-Installer",
+                    subtitle=f"Multi-Installer v{version}",
                     border_style="bold green",
                 )
             )

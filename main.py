@@ -14,7 +14,7 @@ def main():
                 Panel(
                     MainFunctions.tableGen(),
                     title="Available Downloads",
-                    subtitle="Multi-Installer",
+                    subtitle=f"Multi-Installer v{version}",
                     style="bold purple",
                     border_style="bold green",
                 )
@@ -38,13 +38,13 @@ def main():
             "kill self",
             "self.kill",
             "kill(self)",
-        ]:  # Do not bloody ask me why I put so much of these.
+        ]: 
             print(Align.center("[bold red]Exiting..."))
             exit()
         elif user_choice.lower() in ["status", "check", "check status"]:
             MainFunctions.checkLinkStatuses()
         elif user_choice in choices.keys():
-            MainFunctions.download_and_run(user_choice)  # Download the file and run it
+            MainFunctions.download_and_run(user_choice)
             MainFunctions.cleanUpFiles(user_choice, Path(__file__).resolve().parent)
             time.sleep(2)
 
