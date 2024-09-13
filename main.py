@@ -16,16 +16,14 @@ main_functions = MainFunctions(side_functions)
 
 def exit_program() -> None:
     print(Align.center("[bold red]Exiting..."))
-    exit()
+    exit(1)
 
 
 def main() -> None:
     commands: Dict[str, Callable[[], None]] = {
         "settings": main_functions.display_settings,
         "status": main_functions.check_link_statuses,
-        "exit": exit_program,
         "quit": exit_program,
-        "stop": exit_program,
     }
 
     while True:
@@ -54,6 +52,9 @@ def main() -> None:
 
         if user_choice.lower() in commands:
             commands[user_choice.lower()]()
+        elif user_choice not in choices.keys():
+            print(Align.center(f"[bold red]Invalid choice"))
+            return main()
         elif user_choice in choices.keys():
             main_functions.download_and_run(user_choice)
             main_functions.clean_up_files(user_choice, Path(__file__).resolve().parent)
@@ -62,4 +63,5 @@ def main() -> None:
 if __name__ == "__main__":
     os.system("cls" if os.name == "nt" else "clear")
     side_functions.clean_up_cache()
+
     main()

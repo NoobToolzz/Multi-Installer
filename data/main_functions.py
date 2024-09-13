@@ -37,7 +37,7 @@ class MainFunctions:
 
         return table
 
-    async def check_link_statuses(self) -> None:
+    def check_link_statuses(self) -> None:
         def check_link_status(choice: Choice, table: Table) -> None:
             try:
                 r = requests.head(
